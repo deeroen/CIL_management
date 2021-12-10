@@ -1,3 +1,7 @@
 # created by virtualenv automatically
 venv
+*.xlsx
+*.csv
+*.html
+**/connector.py
 
