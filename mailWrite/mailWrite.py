@@ -1,7 +1,7 @@
 import webbrowser
 import os
 
-ajout = False
+ajout = True
 Auteur_du_mail = "Jérôme Dewandre"
 modif = ["150106 - HANAPPE Thérèse"]
 ES = "O7000"
@@ -14,9 +14,10 @@ personnes = ["151162 - BARZIN François", "150106 - HANAPPE Thérèse", "42424 -
 
 genre = "F"
 
-
-name = modif[0].split(" - ")[1]
-
+name = []
+for i in range(len(modif)):
+    name.append(modif[i].split(" - ")[1])
+name=name[0]
 
 
 def produce_column(l):
@@ -36,7 +37,7 @@ if not ajout:
     for m in modif:
         for i in range(len(personnes)):
             if m == personnes[i]:
-                personnes[i] = """<s>""" + personnes[i] + """</s>"""
+                personnes[i] = """<span style="background-color:yellow;"><s>""" + personnes[i] + """</s></span>"""
 
 
 # Si c'est un ajout, ajoute la personne
@@ -44,7 +45,7 @@ else:
     verbe0 = "est créé(e)"
     verbe1 = "a bien été créé"
     for m in modif:
-        personnes.append(m)
+        personnes.append("""<span style="background-color:yellow;">""" + m + """</span">""")
 after_html = produce_column(personnes)
 
 personne_attribut = ""
@@ -93,14 +94,14 @@ s = """<!DOCTYPE html>
 <p style="margin:7.5pt 0 0 0;"><span style="color:#172B4D;font-size:11.5pt;background-color:yellow;">""" + Nom_ES + """</span><span lang="fr" style="color:#172B4D;font-size:11.5pt;"></span></p>
 </td>
 <td valign="top" style="width:118.3pt;padding:0 5.4pt;border-style:none solid solid none;border-right-width:1pt;border-bottom-width:1pt;border-right-color:black;border-bottom-color:black;">
-<p style="margin:7.5pt 0 0 0;"><span style="color:#172B4D;font-size:11.5pt;background-color:yellow;">&nbsp;
+<p style="margin:7.5pt 0 0 0;"><span style="color:#172B4D;font-size:11.5pt;">&nbsp;
 
 """ + before_html + """
 </span></p>
 
 </td>
 <td valign="top" style="width:118.3pt;padding:0 5.4pt;border-style:none solid solid none;border-right-width:1pt;border-bottom-width:1pt;border-right-color:black;border-bottom-color:black;">
-<p style="margin:7.5pt 0 0 0;"><span style="color:#172B4D;font-size:11.5pt;background-color:yellow;">&nbsp;
+<p style="margin:7.5pt 0 0 0;"><span style="color:#172B4D;font-size:11.5pt">&nbsp;
 
 """ + after_html + """
 
