@@ -1,7 +1,11 @@
 # created by virtualenv automatically
 venv
+connectLDAP
 *.xlsx
 *.csv
 *.html
-**/connector.py
+*.xml
 
+
+
+/venv/
