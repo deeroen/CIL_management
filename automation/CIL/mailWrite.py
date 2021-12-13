@@ -54,7 +54,7 @@ if genre == 'F':
 elif genre == 'M':
     personne_attribut = "Monsieur "
 
-s = """<!DOCTYPE html>
+body = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -123,7 +123,7 @@ s = """<!DOCTYPE html>
 </body>
 </html>"""
 
-html = s
+html = body
 path = os.path.abspath('temp.html')
 url = 'file://' + path
 

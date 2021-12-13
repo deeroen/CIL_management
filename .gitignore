@@ -1,12 +1,13 @@
 # created by virtualenv automatically
-venv
-connectLDAP
+/venv/
+/.idea/
+/connectLDAP/
 *.xlsx
 *.csv
 *.html
 *.xml
+*.msg
 
 
 
-/venv/
-/.idea/
+
