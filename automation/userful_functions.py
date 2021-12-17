@@ -1,4 +1,5 @@
 import pandas as pd
+import subprocess
 
 def dict_unwrap(dict):
     """
@@ -17,7 +18,7 @@ def dict_unwrap(dict):
 
 def get_uid_from_uniqueMember(raw):
     """
-    Cette fonction prend un objet contenant des valeur unique Member et retourne une liste de uid
+    Cette fonction prend un objet contenant des valeur uniqueMember (ovd...) et retourne une liste de uid
     qui peut être utilisée comme filtre
     :param raw:
     :return:
@@ -40,3 +41,15 @@ def search_to_df(attrib,connection):
         dictionnaire = dict_unwrap(dictionnaire)
         out = out.append(dictionnaire, ignore_index=True)
     return out
+
+def tiret_a_existe(uid):
+    """Cette fonction check le resulat  de 'net user <uid>-a /domain et stop le programme si l'user
+    n'as pas de -a"""
+    # filters output
+    try:
+        subprocess.check_output('net user ' + uid + '-a /domain')
+        print("Le compte "+ uid +"-a existe")
+    except:
+        print("Le compte "+ uid +"-a n'existe pas")
+        return False
+    return True
