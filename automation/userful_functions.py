@@ -53,3 +53,15 @@ def tiret_a_existe(uid):
         print("Le compte "+ uid +"-a n'existe pas")
         return False
     return True
+
+def uidList_to_filter(input):
+    """
+    Prends en argument une array de uid et retourne un filtre (| (uid)... )
+    :param input:
+    :return:
+    """
+    filter = "(|"
+    for i in input:
+        filter = filter + "(uid=" + i + ")"
+    filter = filter + ")"
+    return filter

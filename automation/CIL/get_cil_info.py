@@ -1,6 +1,4 @@
-from connectLDAP.connector import *
 from automation.userful_functions import *
-
 
 def get_cil_info(conn, ES, uid, groupe_fonctionnel):
     attributs = ['cn', 'uid', 'businessCategory', 'mrw-attr-sexe']
@@ -27,7 +25,8 @@ def get_cil_info(conn, ES, uid, groupe_fonctionnel):
     conn.search('o=mrw.wallonie.be', '(&(ou:dn:=business structure)(uid=' + ES + '))', attributes=['*'])
 
     if len(conn.entries) != 1:
-        print("Error: Plusieur ES trouvés")
+        print("Error: Plusieur ou aucun ES trouvés, le paramètre 'groupe_fonctionnel' est il bien configuré?")
+        print(conn.entries)
         exit(-1)
 
     dn = conn.entries[0].entry_dn
@@ -49,5 +48,4 @@ def get_cil_info(conn, ES, uid, groupe_fonctionnel):
     conn.search('o=mrw.wallonie.be', uid_request, attributes=attributs)
     df = search_to_df(attributs, conn)
     personnes = list(df[['uid', 'cn']].agg(' - '.join, axis=1))
-
     return personnes, Nom_ES, user_modif, genre

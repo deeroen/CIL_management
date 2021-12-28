@@ -12,7 +12,6 @@ mail.Subject = 'Changements CIL'
 mail.Body = 'Changements CILS'
 mail.HTMLBody = body #this field is optional
 
-
 mail.saveas(os.getcwd()+"\\cil.msg")
 #mail.Send()
 
