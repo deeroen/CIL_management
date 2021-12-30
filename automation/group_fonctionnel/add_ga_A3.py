@@ -13,13 +13,13 @@ lt = ['uid=A30000001,uid=A3000000,ou=business structure,o=mrw.wallonie.be', 'uid
 strategy =LDIF
 #Connecteur pour la création de LDIF
 connector = Connector(client_strategy=strategy)
-c = connector.prod_mrw()
+c = connector.dev_mrw()
 c.bind()
 # Check si le groupe existe
-c_verif = Connector().prod_mrw()
+c_verif = Connector().dev_mrw()
 
 if strategy==LDIF:
-    f = open("ldif_log/prod.ldif","w")
+    f = open("ldif_log/def.ldif","w")
 else:
     f = open("output.txt","w")
 

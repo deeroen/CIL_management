@@ -3,16 +3,11 @@ from ldap3 import ObjectDef, Reader
 
 connector = Connector()
 
-txt = """123472
-102742
-117626
-136817
-135528"""
-txt = """WTA00835"""
+txt = """41236"""
 
 lst = txt.split("\n")
 out = {}
-conn = connector.prod_mrw()
+conn = connector.valid_mrw()
 obj_inetorgperson = ObjectDef('mrw-oc-groupesfonctionnels', conn)
 r = Reader(conn, obj_inetorgperson, 'o=mrw.wallonie.be')
 r.search()

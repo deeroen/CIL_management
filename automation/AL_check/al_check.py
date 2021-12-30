@@ -3,11 +3,13 @@ import re
 
 
 al = """
-dn:uid=AL7974,ou=users,o=mrw.wallonie.be
-dn:uid=AL7975,ou=users,o=mrw.wallonie.be
-dn:uid=AL7976,ou=users,o=mrw.wallonie.be
-dn:uid=AL7977,ou=users,o=mrw.wallonie.be
-dn:uid=AL7978,ou=users,o=mrw.wallonie.be
+dn:uid=AL7986,ou=users,o=mrw.wallonie.be
+dn:uid=AL7987,ou=users,o=mrw.wallonie.be
+dn:uid=AL7988,ou=users,o=mrw.wallonie.be
+dn:uid=AL7989,ou=users,o=mrw.wallonie.be
+dn:uid=AL7990,ou=users,o=mrw.wallonie.be
+dn:uid=AL7991,ou=users,o=mrw.wallonie.be
+dn:uid=AL7992,ou=users,o=mrw.wallonie.be
 """
 
 al = al.split('\n')
