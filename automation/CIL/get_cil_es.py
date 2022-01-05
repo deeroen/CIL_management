@@ -3,7 +3,7 @@ from connectLDAP.connector import *
 from ldap3 import ObjectDef, Reader
 
 connector = Connector()
-conn = connector.prod_mrw()
+conn = connector.test_mrw()
 uid = 'uid=131680,ou=users,o=mrw.wallonie.be'
 obj_inetorgperson = ObjectDef('groupOfUniqueNames', conn)
 r = Reader(conn, obj_inetorgperson, 'o=mrw.wallonie.be','cn:=Correspondant informatique local CIL')

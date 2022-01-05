@@ -18,7 +18,7 @@ for i in conn.entries:
     if i.entry_attributes_as_dict['cn'] == [mon_app]:
         raw_list = i
 
-uid_request = get_uid_from_uniqueMember(raw_list)
+uid_request = get_uid_filter_from_uniqueMember(raw_list)
 
 
 

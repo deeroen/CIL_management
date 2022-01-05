@@ -16,7 +16,7 @@ def dict_unwrap(dict):
             dict[key] = ""
     return dict
 
-def get_uid_from_uniqueMember(raw):
+def get_uid_filter_from_uniqueMember(raw):
     """
     Cette fonction prend un objet contenant des valeur uniqueMember (ovd...) et retourne une liste de uid
     qui peut être utilisée comme filtre
@@ -65,3 +65,14 @@ def uidList_to_filter(input):
         filter = filter + "(uid=" + i + ")"
     filter = filter + ")"
     return filter
+
+def get_genre_df(conn, uid_request):
+    """
+    Retrouve toutes les infos (genre,...) des CIL de l'ES à partir d'un filtre contenant tous leurs uid (uid_request)
+    :return: un dataframe
+    """
+    attributs = ['cn', 'uid', 'businessCategory', 'mrw-attr-sexe']
+    conn.search('ou=users,o=mrw.wallonie.be', uid_request, attributes=attributs)
+    df = search_to_df(attributs, conn)
+    df["personnes"] = list(df[['uid', 'cn']].agg(' - '.join, axis=1))
+    return df
