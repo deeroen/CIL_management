@@ -3,8 +3,8 @@ from connectLDAP.connector import *
 from ldap3 import ObjectDef, Reader
 
 connector = Connector()
-conn = connector.test_mrw()
-uid = 'uid=131680,ou=users,o=mrw.wallonie.be'
+conn = connector.prod_mrw()
+uid = 'uid=123296,ou=users,o=mrw.wallonie.be'
 obj_inetorgperson = ObjectDef('groupOfUniqueNames', conn)
 r = Reader(conn, obj_inetorgperson, 'o=mrw.wallonie.be','cn:=Correspondant informatique local CIL')
 r.search()
@@ -17,7 +17,7 @@ for entry in r.entries:
             list.append(entry.entry_dn)
             break
 print(list)
-list = [i.split(",")[1].split("=")[1]for i in list]
+list = [i.split(",")[0].split("=")[1] for i in list]
 print(list)
 
 

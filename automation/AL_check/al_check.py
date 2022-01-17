@@ -33,3 +33,4 @@ print(check_entries(connector.valid_mrw(), filter_LDAP, al))
 """Test"""
 print("AL intégrés en test= ")
 print(check_entries(connector.test_mrw(), filter_LDAP, al))
+

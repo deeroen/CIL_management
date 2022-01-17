@@ -1,39 +1,101 @@
 from connectLDAP.connector import *
-import pandas as pd
-from datetime import date
 from automation.userful_functions import *
-mon_app = 'APPL_bcedwi'
-attributes = ['uid', 'cn', 'internationaliSDNNumber', 'mrw-attr-sexe', 'uid', 'cn', 'sn', 'givenName', 'mail']
-connector = Connector()
-conn = connector.prod_ext()
+from datetime import date
+from ldap3 import ObjectDef, Reader, ALL, MODIFY_ADD, LDIF, SYNC, MODIFY_DELETE
+from automation.ldfi_wirte_funcitons import *
+df = pd.read_excel("C:/Users/AL7871/Downloads/PEGA-ACM-AES2.xlsx")
+df['Identifiant'] = df['Identifiant'].astype(str).str.replace("\\u200b", "", regex=True).str.lower()
+df['path'] = [
+    "uid=" + i + ",ou=users,dc=internal,dc=ovd" if "acm_" not in i else "uid=" + i + ",ou=demo_users,dc=external,dc=ovd"
+    for i in df['Identifiant']]
 
-'''Cherche tous les utilisateur de l'app en question'''
-conn.search('o=ext.wallonie.be', '(cn=' + mon_app + ')', attributes=['cn', 'description', 'uniqueMember'])
-print(conn.entries)
+# Stratégie LDAP3, LDIF print juste le ldif dans output.ldif, SYNC effectue la modif dans le ldap
+strategy = LDIF
 
-# Crée la requête pour la branche mrw
-raw_list = []
-for i in conn.entries:
-    '''Ici je selectionne l'applicaiton qui m'intéresse'''
-    if i.entry_attributes_as_dict['cn'] == [mon_app]:
-        raw_list = i
+Env = {'DEV': {"app": "pega-acmdev", "conn": Connector().dev_ext(),"c_add": Connector(client_strategy=strategy).dev_ext()},
+       'TEST': {"app": "pega-acmtest", "conn": Connector().test_ext(),"c_add": Connector(client_strategy=strategy).test_ext()},
+       'VALID': {"app": "pega-acm", "conn": Connector().valid_ext(),"c_add": Connector(client_strategy=strategy).valid_ext()},
+       'PROD': {"app": "APPL_pega-acm", "conn": Connector().prod_ext(),"c_add": Connector(client_strategy=strategy).prod_ext()}}
 
-uid_request = get_uid_filter_from_uniqueMember(raw_list)
+for env in Env:
+
+    df[env] = df[env].notna()
+
+    mon_app = Env[env]["app"]
+
+    # attributes = ['uid', 'cn', 'internationaliSDNNumber', 'mrw-attr-sexe', 'uid', 'cn', 'sn', 'givenName', 'mail']
+    attributes = ['uid', 'cn', 'mrw-attr-sexe', 'uid', 'cn', 'sn', 'givenName', 'mail']
+
+    conn = Env[env]["conn"]
+
+    '''Cherche tous les utilisateur de l'app en question'''
+    conn.search('o=ext.wallonie.be', '(cn=' + mon_app + ')', attributes=['cn', 'description', 'uniqueMember'])
+    print(conn.entries)
+
+    # Crée la requête pour la branche mrw
+    raw_list = []
+    for i in conn.entries:
+        '''Ici je selectionne l'applicaiton qui m'intéresse'''
+        if i.entry_attributes_as_dict['cn'] == [mon_app]:
+            raw_list = i
+    Env[env]["dn"] = raw_list.entry_dn
+
+    uid_request = get_uid_filter_from_uniqueMember(raw_list)
+    print(raw_list.entry_attributes_as_dict['uniqueMember'])
+    out = pd.DataFrame({"ladap"+env: True,'path': raw_list.entry_attributes_as_dict['uniqueMember']})
+    out['path'] = out['path'].str.lower()
+
+    final = out.set_index('path').join(df[[env,'Identifiant','path']].set_index('path'), how='outer', lsuffix='_caller', rsuffix='_other')
+
+    # Ajoute les utilisateurs de la liste fournie qui n'y sont pas et retir les utilisateur de la liste qui ne doivent pas y être
+    final["add"] = (final[env] == True).values & (final["ladap"+env] !=True).values
+    final["remove"] = (final[env] == False).values & (final["ladap"+env] ==True).values
+    final['path'] = final.index
+
+
+    """
+    ldap + ENV = présence de la personne dans le ldap (vrai: il est présent, rien: il n'est pas présent), ENV = la demande de la personne (vrai: il faut ajouter, Faux: il ne doit pas être présent, rien: ne fait pas partie de la demande)
+    add: faut il ajouter la personne
+    remove: faut il l'enlever?
+    path, le path à ajouter en fonction de l'identifiant
+    
+    """
+    final.to_excel("data/" + mon_app+env + str(date.today()) + '.xlsx',index=False)
 
 
 
-print(uid_request)
-'''Cherche dans la branche mrw tout les utilisateurs de l'app'''
-conn.search('o=mrw.wallonie.be', uid_request, attributes=attributes)
+for env in Env:
+    mon_app = Env[env]["app"]
+    c = Env[env]["c_add"]
+    c.bind()
 
-#print(conn.entries)
+    if strategy == LDIF:
+        f = open("ldif/" + mon_app+env + str(date.today()) + ".ldif", "w")
+    else:
+        exit(-1)
+    xlsx = pd.read_excel("data/" + mon_app + env + str(date.today()) + '.xlsx')
 
-'''Ecrit dans un excel avec le nom de l'app et la date'''
+    for index,row in xlsx.iterrows():
+        if row['add']:
+            print(row['path'])
+            # check s'il y a des deletions
+            f.write('#add pour ' + row['Identifiant'] + '\r')
 
+            c.modify(Env[env]["dn"],
+                         {'uniqueMember': [(MODIFY_ADD, [row['path']])]})
 
+            write_ldif(c,strategy,f)
 
-out = search_to_df(attributes,conn)
+        if row['remove']:
+            print(row['path'])
+            # check s'il y a des deletions
+            f.write('#remove pour ' + row['Identifiant'] + '\r')
 
-out.index += 1
-print(out)
-out.to_excel(str(date.today()) + mon_app + ".xlsx")
+            c.modify(Env[env]["dn"],
+                         {'uniqueMember': [(MODIFY_DELETE, [row['path']])]})
+            write_ldif(c,strategy,f)
+
+    # close the connection
+    c.unbind()
+
+    f.close()

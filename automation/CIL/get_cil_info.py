@@ -42,10 +42,11 @@ def get_cil_info(conn, ES, uid, groupe_fonctionnel):
         print("Error: Plusieur groupe fonctionnels trouvés")
         exit(-1)
     ## Retrouve l'uid des CILS de l'ES
+    print(conn.entries)
     uid_request = get_uid_filter_from_uniqueMember(conn.entries[0])
 
     # Retrouve toutes les infos des CIL de l'ES à partir d'un filtre contenant tous leurs uid (uid_request)
-    conn.search('o=mrw.wallonie.be', uid_request, attributes=attributs)
+    conn.search('ou=users,o=mrw.wallonie.be', uid_request, attributes=attributs)
     df = search_to_df(attributs, conn)
     personnes = list(df[['uid', 'cn']].agg(' - '.join, axis=1))
     return personnes, Nom_ES, user_modif, genre

@@ -1,12 +1,11 @@
 import webbrowser
 import os
-from connectLDAP.connector import Connector
-import pandas as pd
+
 from csv_import import *
 import collections
 Auteur_du_mail = "Jérôme Dewandre"
 
-groupe_fonctionnel = 'CIL'
+
 
 connector = Connector()
 conn = connector.prod_mrw()

@@ -1,12 +1,13 @@
 import pandas as pd
 from connectLDAP.connector import *
 from automation.CIL.class_object.Classes import *
-
+from automation.userful_functions import *
 groupe_fonctionnel = 'CIL'
-groupe_cn = "cn=Correspondant informatique local CIL"
+
+df = pd.read_excel("C:/Users/AL7871/Downloads/CIL2.xlsx")
 
 conn = Connector().prod_mrw()
-conn.search('ou=business structure,o=mrw.wallonie.be', "(uid=O7*)", attributes=['*'])
+conn.search('ou=business structure,o=mrw.wallonie.be', uidList_to_filter(df["identifiant ES"].values), attributes=['*'])
 
 ES_dn = {}
 for i in conn.entries:
@@ -15,7 +16,7 @@ for i in conn.entries:
     ES_dn[ES_id] = ES(ES_id, conn)
     print(i.entry_dn)
 
-df = pd.read_excel("C:/Users/AL7871/Downloads/CILs.xlsx")
+
 df["Acrréditation retirées"] = df["Acrréditation retirées"].str.upper()
 df["identifiant ES"] = df["identifiant ES"].str.replace(' ', '')
 for index, row in df[df["identifiant ES"] == "EnsembledesES"].iterrows():

@@ -76,3 +76,22 @@ def get_genre_df(conn, uid_request):
     df = search_to_df(attributs, conn)
     df["personnes"] = list(df[['uid', 'cn']].agg(' - '.join, axis=1))
     return df
+
+
+def get_uniqueMember(connection,user):
+    """
+    Cette function retourne le full uniqueMember path depuis un uid AL, ou agent externe
+    :param connection:
+    :param user:
+    :return:
+    """
+    # Check if ulis
+    if user.isdecimal() or "AL" in user:
+        uid = "uid=" + user + ",ou=users,o=mrw.wallonie.be"
+        uid = uid.replace("o=mrw.wallonie.be", "dc=internal,dc=ovd")
+
+    else:
+        connection.search('o=ext.wallonie.be', "(uid=" + user + ")", attributes=["uid"])
+        uid = str(connection.entries[0].entry_dn)
+        uid = uid.replace("o=ext.wallonie.be", "dc=external,dc=ovd")
+    return uid

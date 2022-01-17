@@ -9,10 +9,13 @@ class ES():
     def __init__(self, es_id, conneciton):
         self.es_id = es_id
         self.conn = conneciton
+        self.groupe_fonctionnel_dict = {'CIL': '(cn=Correspondant informatique local CIL)',
+                                        'CI': '(cn=Coordinateur informatique CI)'}
         self.dn, self.Nom_ES = self.get_dn(self.conn)
         self.a = False
         self.members = self.get_OLD_members(self.conn)
         self.modif = {"ajout":{},"deletion":{}}
+
 
     def get_dn(self, conn):
         # Retrouve le dn de l'ES et son nom complet
@@ -31,11 +34,10 @@ class ES():
 
     def get_OLD_members(self, conn):
         # Retrouve les CIL(CI) de l'ES
-        groupe_fonctionnel_dict = {'CIL': '(cn=Correspondant informatique local CIL)',
-                                   'CI': '(cn=Coordinateur informatique CI)'}
+
         out = {'CIL': "", 'CI': ""}
-        for key in groupe_fonctionnel_dict:
-            conn.search(self.dn, groupe_fonctionnel_dict[key], search_scope='LEVEL', attributes=['*'])
+        for key in self.groupe_fonctionnel_dict:
+            conn.search(self.dn, self.groupe_fonctionnel_dict[key], search_scope='LEVEL', attributes=['*'])
             if len(conn.entries) != 1:
                 out[key] = {
                     "Error: Plusieur ou aucun groupe fonctionnels trouvés comme " + key + " de " + self.es_id: conn.entries}
@@ -55,7 +57,9 @@ class Modification():
         self.uids = uids
         self.conn = conn
         self.df = self.get_cil_info()
-        self.ALL_a_existe = self.tiret_a()
+        self.ALL_a_existe = False
+        self._a_existe = self.tiret_a()
+
 
 
     def get_cil_info(self):
