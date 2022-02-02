@@ -6,13 +6,15 @@ from automation.ldfi_wirte_funcitons import *
 import random
 import string
 
-mail = "christophe.lecocq@tibi.be"
-premon = "Christophe"
-nom = "LECOCQ"
+strs = "Christian JOVELIN christian.jovelin@arcelormittal.com".split(" ")
+print(strs)
+mail = strs[2]
+premon = strs[0]
+nom = strs[1]
 nom = nom.upper()
-app = "edocsdgt2"
+app = "reiwa"
 
-uid = "IGI00004"
+uid = "ARC00008"
 
 # Stratégie LDAP3, LDIF print juste le ldif dans output.ldif, SYNC effectue la modif dans le ldap
 strategy = LDIF
@@ -24,12 +26,13 @@ conn = Env[env]["conn"]
 mon_app = Env[env]["app"]
 
 
-
-if conn.search('o=ext.wallonie.be', '(mail='+mail+')', attributes=['*']):
+# Check si le mail existe
+if conn.search('ou=users,o=ext.wallonie.be', '(&(mail='+mail+')(!(ou:dn:=XXX_TO_DELETE)))', attributes=['*']):
     print("email in use!!")
     print(conn.entries)
     uid = conn.entries[0]["uid"][0]
     dn_user = conn.entries[0].entry_dn
+# Si il existe pas, sort les gens ac la même fin de mail
 else :
     conn.search('o=ext.wallonie.be', '(mail=' + "*@" + mail.split("@")[1] + ')', attributes=['uid', 'mail'])
     print(conn.entries)
@@ -55,7 +58,7 @@ def get_random_string(length):
 c = Env[env]["c_add"]
 c.bind()
 if strategy == LDIF:
-    f = open("ldif/" + mon_app+ env + str(date.today())+nom+premon + ".ldif", "w")
+    f = open("ldif/" + mon_app+ env + date.today().strftime("%Y-%m-%d")+nom+premon + ".ldif", "w")
 else:
     exit(-1)
 

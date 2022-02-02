@@ -43,7 +43,6 @@ for conn in lt:
         f.write(str(c.result)+env)
     f.write('\r\n')
     c.unbind()
-# close the connection
 
 
 f.close()

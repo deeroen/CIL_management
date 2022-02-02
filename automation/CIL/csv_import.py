@@ -4,7 +4,7 @@ from automation.CIL.class_object.Classes import *
 from automation.userful_functions import *
 groupe_fonctionnel = 'CIL'
 
-df = pd.read_excel("C:/Users/AL7871/Downloads/CIL2.xlsx")
+df = pd.read_excel("C:/Users/AL7871/Downloads/CILS2.xlsx")
 
 conn = Connector().prod_mrw()
 conn.search('ou=business structure,o=mrw.wallonie.be', uidList_to_filter(df["identifiant ES"].values), attributes=['*'])
@@ -17,7 +17,7 @@ for i in conn.entries:
     print(i.entry_dn)
 
 
-df["Acrréditation retirées"] = df["Acrréditation retirées"].str.upper()
+#df["Acrréditation retirées"] = df["Acrréditation retirées"].str.upper()
 df["identifiant ES"] = df["identifiant ES"].str.replace(' ', '')
 for index, row in df[df["identifiant ES"] == "EnsembledesES"].iterrows():
     for key in ES_dn:
@@ -26,8 +26,6 @@ for index, row in df[df["identifiant ES"] == "EnsembledesES"].iterrows():
                        ignore_index=True)
 
 df = df[df['identifiant ES'] != 'EnsembledesES'].reset_index(drop=True)
-
-df["Designation"].isna()
 
 
 deletion = df[df["Designation"].isna()].reset_index(drop=True)

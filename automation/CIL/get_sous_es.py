@@ -5,7 +5,7 @@ from automation.userful_functions import *
 groupe_fonctionnel = 'CIL'
 
 conn = Connector().prod_mrw()
-conn.search('ou=business structure,o=mrw.wallonie.be', "(&(uid:dn:=S2000200)(ObjectClass=organizationalPerson))", attributes=['*'])
+conn.search('ou=business structure,o=mrw.wallonie.be', "(&(uid:dn:=S2160200)(ObjectClass=organizationalPerson))", attributes=['*'])
 
 print(conn.entries)
 out = []
