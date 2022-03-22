@@ -3,18 +3,18 @@ from connectLDAP.connector import *
 from automation.CIL.class_object.Classes import *
 from datetime import date
 
-df = pd.read_excel("C:/Users/AL7871/Downloads/CILS2.xlsx")
+#df = pd.read_excel("C:/Users/AL7871/Downloads/Modification CIL SPW F.xlsx")
 ajout = pd.read_csv("data/ajout.csv")
 deletion = pd.read_csv("data/deletion.csv")
-out = pd.DataFrame(columns=deletion.columns).drop("Unnamed: 0", axis=1)
 
+
+#out = pd.DataFrame(columns=deletion.columns).drop("Unnamed: 0", axis=1)
+
+out = pd.concat([ajout,deletion],ignore_index=True).drop("Unnamed: 0", axis=1)
 conn = Connector().prod_mrw()
-es_list = df['identifiant ES'].unique().tolist()
-out["identifiant ES"] = es_list
+es_list = out['identifiant ES'].unique().tolist()
 conn.search('ou=business structure,o=mrw.wallonie.be', uidList_to_filter(es_list), attributes=['*'])
 
-out['ULIS ID'] = "126415"
-out['Designation'] = "V"
 ES_dn = {}
 for i in conn.entries:
     ES_id = i.entry_dn.split("=")[1].split(',')[0]

@@ -6,14 +6,10 @@ from automation.ldfi_wirte_funcitons import *
 import random
 import string
 
-strs = """51412
-37634
-47231
-53415
-53513
-40476""".split("\n")
+strs = """125245
+115483""".split("\n")
 
-app = "securiwal"
+app = "jira"
 
 
 # Stratégie LDAP3, LDIF print juste le ldif dans output.ldif, SYNC effectue la modif dans le ldap

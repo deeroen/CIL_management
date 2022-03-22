@@ -47,6 +47,7 @@ def tiret_a_existe(uid):
     n'as pas de -a"""
     # filters output
     try:
+        print("User " + uid )
         subprocess.check_output('net user ' + uid + '-a /domain')
         print("Le compte "+ uid +"-a existe")
     except:

@@ -4,7 +4,7 @@ from automation.userful_functions import *
 
 connector = Connector()
 
-txt = """AND00013"""
+txt = """al7871"""
 
 lst = txt.split("\n")
 out = {}

@@ -22,9 +22,10 @@ def get_cil_info(conn, ES, uid, groupe_fonctionnel):
     genre = sexe_from_uid(conn, uid, attributs)
 
     # Retrouve le dn de l'ES et son nom complet
-    conn.search('o=mrw.wallonie.be', '(&(ou:dn:=business structure)(uid=' + ES + '))', attributes=['*'])
+    conn.search('o=mrw.wallonie.be', '(&(|(ou:dn:=business structure)(ou:dn:=es libres))(uid=' + ES + '))', attributes=['*'])
 
     if len(conn.entries) != 1:
+
         print("Error: Plusieur ou aucun ES trouvés, le paramètre 'groupe_fonctionnel' est il bien configuré?")
         print(conn.entries)
         exit(-1)

@@ -6,9 +6,9 @@ import pandas as pd
 
 ajout = True
 Auteur_du_mail = "Jérôme Dewandre"
-uid = "126415"
+uid = "AL7834"
 groupe_fonctionnel = 'CIL'
-ES_List = ['S2160200', 'S2160201', 'S2160202', 'S2160203', 'S2160204', 'S2160205', 'S2160206', 'S2160207', 'S2160208', 'S2160209', 'S2160210', 'S2160299']
+ES_List = ['e9c269e0-a874-11e0-ae65-0050569d16e1']
 connector = Connector()
 conn = connector.prod_mrw()
 
